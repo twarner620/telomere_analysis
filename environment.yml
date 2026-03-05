@@ -1,0 +1,11 @@
+name: telomere_analysis
+channels:
+  - bioconda
+  - conda-forge
+dependencies:
+  - bedtools
+  - matplotlib
+  - samtools
+  - seaborn
+  - seqtk
+  - umi_tools

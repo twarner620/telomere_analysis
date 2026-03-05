@@ -1,0 +1,31 @@
+# Python/cache noise
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+nohup.out
+
+# Pipeline outputs
+/telomere_outputs/
+/outputs/
+/results/
+/tmp/
+
+# Common generated analysis directories (when outputs are created inside repo)
+**/reads/
+**/plots/
+**/genome_comparison/
+**/heatmap/
+**/raw_reads/
+**/trimmed/
+**/trimming_reports/
+
+# Common generated analysis files
+**/telomere.tsv
+**/genome_telomere_unit.tsv
+**/*.norm
+**/*.norm.tsv
+**/*.png
+**/*.fa
+**/*.fq
