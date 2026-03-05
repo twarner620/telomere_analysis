@@ -31,7 +31,7 @@ The Conda environment file lives at the repo root: `./environment.yml`.
 ```bash
 cd ~/analysis/telomere_analysis
 conda env create -f environment.yml
-conda activate teleomere_analysis
+conda activate telomere_analysis
 ```
 
 ```text
