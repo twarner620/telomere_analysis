@@ -24,7 +24,10 @@ process() {
     wait
 }
 
-cut -f 2 "$order" | while IFS= read -r sample; do
+mapfile -t samples < <(cut -f 2 "$order")
+
+for sample in "${samples[@]}"; do
     process "$sample" &
 done
+
 wait
