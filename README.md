@@ -1,5 +1,14 @@
 # Telomere Analysis Pipeline
 
+## Recent Changes
+
+**2026-04-25**
+- `preprocess-telomeres.sh` now accepts `.fq.gz` and `.fq` inputs
+- Preprocessing output is written to a configurable `SCRATCH_DIR` (default: `/storage/scratch1/8/twarner31/telomere_analysis/processed_fastqs`); upon completion, processed FASTQs are symlinked into `processed_fastqs/` in the repo root
+- `preprocess-telomeres.sh` interface simplified — output directory is no longer a CLI argument (hardcoded to scratch + symlink pattern above); default parallelism raised to 50 jobs
+
+---
+
 This repo is reduced to only the code required for:
 - `telomere/preprocessing/preprocess-telomeres.sh`
 - `telomere/run_telomere_analysis.sh`
@@ -38,6 +47,8 @@ conda activate telomere_analysis
 telomere/
   config/
     order.tsv
+    manifest.example.tsv
+    <your-manifest>.tsv   # gitignored
   pipeline/
     analyze.sh
     generate_data.sh
@@ -46,7 +57,6 @@ telomere/
     heatmap/
   preprocessing/
     preprocess-telomeres.sh
-    manifest.example.tsv
   run_telomere_analysis.sh
 ```
 
@@ -58,24 +68,32 @@ Input manifest format (tab-separated, no header):
 sample_id    barcode    fastq_path
 ```
 
-Use the original barcode in the manifest. Do not reverse-complement barcodes manually; `preprocess-telomeres.sh` handles reverse complementation internally.
+- `fastq_path` may be `.fq` or `.fq.gz` — both are handled automatically
+- Use the original barcode; do not reverse-complement manually — `preprocess-telomeres.sh` handles that internally
 
-Example:
+Before running, confirm `SCRATCH_DIR` at the top of `preprocess-telomeres.sh` points to your scratch space. The default is:
+
+```bash
+SCRATCH_DIR="/storage/scratch1/8/twarner31/telomere_analysis/processed_fastqs"
+```
+
+Run:
 
 ```bash
 cd ~/analysis/telomere_analysis
 bash telomere/preprocessing/preprocess-telomeres.sh \
-  telomere/preprocessing/manifest.example.tsv \
-  /path/to/processed_fastqs \
-  8
+  telomere/config/my-manifest.tsv \
+  [threads]   # optional, default 50
 ```
+
+On completion, processed FASTQs are symlinked into `processed_fastqs/` at the repo root. Pass that directory as input to the next step.
 
 ## 2) Run Telomere Analysis
 
 ```bash
 cd ~/analysis/telomere_analysis
 bash telomere/run_telomere_analysis.sh \
-  /path/to/processed_fastqs \
+  processed_fastqs \
   /path/to/telomere_outputs \
   /path/to/filtered_beds \
   /path/to/hg38-noalts.fa \
@@ -84,7 +102,7 @@ bash telomere/run_telomere_analysis.sh \
 ```
 
 Arguments:
-1. `processed_fastq_dir` from preprocessing output
+1. `processed_fastqs/` — symlinked output from preprocessing
 2. output directory for analysis results
 3. directory containing per-sample filtered BED files (`<sample>.bed`)
 4. hg38 FASTA

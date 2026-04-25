@@ -8,6 +8,7 @@ nohup.out
 
 # Pipeline outputs
 /telomere_outputs/
+/output/
 /outputs/
 /results/
 /tmp/
@@ -15,8 +16,6 @@ nohup.out
 # Common generated analysis directories (when outputs are created inside repo)
 **/reads/
 **/plots/
-**/genome_comparison/
-**/heatmap/
 **/raw_reads/
 **/trimmed/
 **/trimming_reports/
@@ -29,3 +28,13 @@ nohup.out
 **/*.png
 **/*.fa
 **/*.fq
+
+
+# Config manifests — ignore everything except the bundled examples
+telomere/config/*.tsv
+!telomere/config/manifest.example.tsv
+!telomere/config/order.tsv
+
+# Speficic Tyler-isms
+run_all.sh
+telomere_update-todo.txt
