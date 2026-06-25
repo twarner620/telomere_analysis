@@ -2,6 +2,11 @@
 
 ## Recent Changes
 
+**2026-06-24**
+- Added `preprocess-telomeres-aviti.sh` for AVITI sequencing (PCR-free, no UMIs, already demultiplexed)
+- AVITI preprocessing uses the same manifest format as Illumina (barcode column ignored)
+- Analysis pipeline (`run_telomere_analysis.sh`) is shared between both workflows
+
 **2026-04-25**
 - `preprocess-telomeres.sh` now accepts `.fq.gz` and `.fq` inputs
 - Preprocessing output is written to a configurable `SCRATCH_DIR` (default: `/storage/scratch1/8/twarner31/telomere_analysis/processed_fastqs`); upon completion, processed FASTQs are symlinked into `processed_fastqs/` in the repo root
@@ -9,9 +14,11 @@
 
 ---
 
-This repo is reduced to only the code required for:
-- `telomere/preprocessing/preprocess-telomeres.sh`
-- `telomere/run_telomere_analysis.sh`
+This repo supports two sequencing platforms:
+- **Illumina** (ribose-seq with UMIs) — `telomere/preprocessing/preprocess-telomeres.sh`
+- **AVITI** (PCR-free, no UMIs, already demultiplexed) — `telomere/preprocessing/preprocess-telomeres-aviti.sh`
+
+Both preprocessing scripts produce per-sample FASTQs that feed into the shared analysis pipeline (`telomere/run_telomere_analysis.sh`).
 
 It also depends on `resort.py` from the co-requisite `RibosePreferenceAnalysis` repo.
 The vast majority of this code is repurposed from Penghao Xu.
@@ -57,33 +64,43 @@ telomere/
     heatmap/
   preprocessing/
     preprocess-telomeres.sh
+    preprocess-telomeres-aviti.sh
   run_telomere_analysis.sh
 ```
 
 ## 1) Preprocess FASTQs
 
-Input manifest format (tab-separated, no header):
+Both workflows use the same manifest format (tab-separated, no header):
 
 ```text
-sample_id    barcode    fastq_path
+sample_id	barcode	fastq_path
 ```
 
 - `fastq_path` may be `.fq` or `.fq.gz` — both are handled automatically
-- Use the original barcode; do not reverse-complement manually — `preprocess-telomeres.sh` handles that internally
+- For AVITI, the barcode column is present but ignored
+- For Illumina, use the original barcode; do not reverse-complement manually — `preprocess-telomeres.sh` handles that internally
 
-Before running, confirm `SCRATCH_DIR` at the top of `preprocess-telomeres.sh` points to your scratch space. The default is:
+Before running, confirm `SCRATCH_DIR` at the top of the preprocessing script points to your scratch space. The default is:
 
 ```bash
 SCRATCH_DIR="/storage/scratch1/8/twarner31/telomere_analysis/processed_fastqs"
 ```
 
-Run:
+### Illumina
 
 ```bash
 cd ~/analysis/telomere_analysis
 bash telomere/preprocessing/preprocess-telomeres.sh \
   telomere/config/my-manifest.tsv \
   [threads]   # optional, default 50
+```
+
+### AVITI
+
+```bash
+cd ~/analysis/telomere_analysis
+bash telomere/preprocessing/preprocess-telomeres-aviti.sh \
+  telomere/config/my-manifest.tsv
 ```
 
 On completion, processed FASTQs are symlinked into `processed_fastqs/` at the repo root. Pass that directory as input to the next step.
