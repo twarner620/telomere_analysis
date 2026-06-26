@@ -38,3 +38,4 @@ telomere/config/*.tsv
 # Speficic Tyler-isms
 run_all.sh
 telomere_update-todo.txt
+run_aviti.sh

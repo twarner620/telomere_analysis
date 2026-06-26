@@ -43,7 +43,11 @@ def main():
                 freq.append(0)
             else:
                 freq.append(float(ws[i])/bg[sp][di[i]])
-        args.o.write(ws[0] + '\t' + '\t'.join([str(freq[i]/sum(freq)) for i in range(len(freq))]) + '\n')
+        total = sum(freq)
+        if total == 0:
+            print(f'[WARNING] Skipping {ws[0].strip()}: zero total frequency', file=sys.stderr)
+            continue
+        args.o.write(ws[0] + '\t' + '\t'.join([str(freq[i]/total) for i in range(len(freq))]) + '\n')
     print('Done!')
 
 

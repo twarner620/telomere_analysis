@@ -89,7 +89,6 @@ SCRATCH_DIR="/storage/scratch1/8/twarner31/telomere_analysis/processed_fastqs"
 ### Illumina
 
 ```bash
-cd ~/analysis/telomere_analysis
 bash telomere/preprocessing/preprocess-telomeres.sh \
   telomere/config/my-manifest.tsv \
   [threads]   # optional, default 50
@@ -98,7 +97,6 @@ bash telomere/preprocessing/preprocess-telomeres.sh \
 ### AVITI
 
 ```bash
-cd ~/analysis/telomere_analysis
 bash telomere/preprocessing/preprocess-telomeres-aviti.sh \
   telomere/config/my-manifest.tsv
 ```
@@ -108,7 +106,6 @@ On completion, processed FASTQs are symlinked into `processed_fastqs/` at the re
 ## 2) Run Telomere Analysis
 
 ```bash
-cd ~/analysis/telomere_analysis
 bash telomere/run_telomere_analysis.sh \
   processed_fastqs \
   /path/to/telomere_outputs \
